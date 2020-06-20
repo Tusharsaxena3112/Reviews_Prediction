@@ -24,7 +24,7 @@ class Review:
 
 
 reviews = []
-with open('Books_small.json') as f:
+with open('Books_small_10000.json') as f:
     for line in f:
         l = json.loads(line)
         reviews.append(Review(l['reviewText'], l['overall']))
