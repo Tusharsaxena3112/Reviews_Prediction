@@ -1,8 +1,10 @@
 import json
+import random
 
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics import accuracy_score
+from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
@@ -23,18 +25,27 @@ class Review:
             return 'POSITIVE'
 
 
+def evenly_distribute(reviews):
+    positive_reviews = list(filter(lambda x: x.sentiment == 'POSITIVE', reviews))
+    negative_reviews = list(filter(lambda x: x.sentiment == 'NEGATIVE', reviews))
+    reviews = positive_reviews[:len(negative_reviews)] + negative_reviews
+    random.shuffle(reviews)
+    return reviews
+
+
 reviews = []
 with open('Books_small_10000.json') as f:
     for line in f:
         l = json.loads(line)
         reviews.append(Review(l['reviewText'], l['overall']))
 
+reviews = evenly_distribute(reviews)
 reviews_text = [x.review_text for x in reviews]
 review_sentiments = [x.sentiment for x in reviews]
 
 # splitting data into train and test
 train_reviews_text, test_reviews_text, train_reviews_sentiments, test_reviews_sentiments = train_test_split(
-    reviews_text, review_sentiments, test_size=0.3, random_state=42)
+    reviews_text, review_sentiments, test_size=0.2, random_state=42)
 
 vectorizer = CountVectorizer()
 
@@ -59,12 +70,10 @@ accuracy_score_dec = accuracy_score(np.array(test_reviews_sentiments), predicati
 
 # Evaluation of the models
 
-from sklearn.metrics import f1_score
-
 f1_score_knn = f1_score(test_reviews_sentiments, predictions_knn, average=None,
-                        labels=['POSITIVE', 'NEGATIVE', 'NEUTRAL'])
+                        labels=['POSITIVE', 'NEGATIVE'])
 print(f1_score_knn)
 
-f1_score_dec = f1_score(test_reviews_sentiments, predication_dec, labels=['POSITIVE', 'NEGATIVE', 'NEUTRAL'],
+f1_score_dec = f1_score(test_reviews_sentiments, predication_dec, labels=['POSITIVE', 'NEGATIVE'],
                         average=None)
 print(f1_score_dec)
