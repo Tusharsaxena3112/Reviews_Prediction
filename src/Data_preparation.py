@@ -1,5 +1,6 @@
 import json
 
+
 class Review:
     def __init__(self, review_text, rate):
         self.review_text = review_text
@@ -15,9 +16,8 @@ class Review:
             return 'POSITIVE'
 
 
+reviews = []
 with open('Books_small.json') as f:
     for line in f:
         l = json.loads(line)
-        review = l['reviewText']
-        print(review)
-        break
+        reviews.append(Review(l['reviewText'], l['overall']))
