@@ -7,6 +7,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 
 
@@ -68,12 +69,19 @@ dec.fit(train_reviews_text_vector, train_reviews_sentiments)
 predication_dec = dec.predict(test_reviews_text_vector)
 accuracy_score_dec = accuracy_score(np.array(test_reviews_sentiments), predication_dec)
 
+# SVM model
+svm = SVC(kernel='linear')
+svm.fit(train_reviews_text_vector, train_reviews_sentiments)
+prediction_svm = svm.predict(test_reviews_text_vector)
+
+
 # Evaluation of the models
 
-f1_score_knn = f1_score(test_reviews_sentiments, predictions_knn, average=None,
-                        labels=['POSITIVE', 'NEGATIVE'])
+f1_score_knn = f1_score(test_reviews_sentiments, predictions_knn, average=None, labels=['POSITIVE', 'NEGATIVE'])
 print(f1_score_knn)
 
-f1_score_dec = f1_score(test_reviews_sentiments, predication_dec, labels=['POSITIVE', 'NEGATIVE'],
-                        average=None)
+f1_score_dec = f1_score(test_reviews_sentiments, predication_dec, labels=['POSITIVE', 'NEGATIVE'], average=None)
 print(f1_score_dec)
+
+f1_score_svm = f1_score(test_reviews_sentiments, prediction_svm, average=None, labels=['POSITIVE', 'NEGATIVE'])
+print(f1_score_svm)
