@@ -70,9 +70,10 @@ predication_dec = dec.predict(test_reviews_text_vector)
 accuracy_score_dec = accuracy_score(np.array(test_reviews_sentiments), predication_dec)
 
 # SVM model
-svm = SVC(kernel='linear')
+svm = SVC(kernel='linear', random_state=42)
 svm.fit(train_reviews_text_vector, train_reviews_sentiments)
 prediction_svm = svm.predict(test_reviews_text_vector)
+accuracy_score_svm = accuracy_score(np.array(test_reviews_sentiments), prediction_svm)
 
 
 # Evaluation of the models
@@ -85,3 +86,7 @@ print(f1_score_dec)
 
 f1_score_svm = f1_score(test_reviews_sentiments, prediction_svm, average=None, labels=['POSITIVE', 'NEGATIVE'])
 print(f1_score_svm)
+
+test_data = ['Bad idea']
+test_data_vector = vectorizer.transform(test_data)
+print(svm.predict(test_data_vector))
